@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NutriTreino Pro</title>
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --primary-hover: #4338CA;
+            --bg-color: #F3F4F6;
+            --card-bg: #FFFFFF;
+            --text-main: #1F2937;
+            --text-muted: #6B7280;
+            --border: #E5E7EB;
+            --danger: #EF4444;
+            --danger-bg: #FEF2F2;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        .screen {
+            display: none;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        .screen.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* HOME SCREEN */
+        #screen-home {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .hero-title {
+            color: white;
+            font-size: 2.8rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .hero-subtitle {
+            color: #E5E7EB;
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            max-width: 350px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            transition: transform 0.1s, background-color 0.2s;
+            margin: 0 auto;
+            display: block;
+        }
+
+        .btn-primary:active { transform: scale(0.98); }
+
+        /* WARNING SCREEN */
+        #screen-warning {
+            justify-content: center;
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .warning-title {
+            color: var(--danger);
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .warning-box {
+            background-color: var(--danger-bg);
+            border: 1px solid #FCA5A5;
+            padding: 24px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #7F1D1D;
+        }
+
+        /* APP CONTAINER */
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 24px;
+            padding-top: 20px;
+        }
+
+        .header h1 {
+            color: var(--primary);
+            margin: 0 0 5px 0;
+        }
+
+        .header p {
+            color: var(--text-muted);
+            margin: 0;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 12px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-align: center;
+        }
+
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 1.1rem;
+            background-color: #F9FAFB;
+            text-align: center;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .radio-vertical {
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .radio-option {
+            width: 100%;
+            max-width: 350px;
+            position: relative;
+        }
+
+        .radio-group:not(.radio-vertical) .radio-option {
+            flex: 1;
+            max-width: none;
+        }
+
+        .radio-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .radio-label {
+            display: block;
+            padding: 14px;
+            text-align: center;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            background-color: white;
+            transition: all 0.2s;
+            color: var(--text-muted);
+        }
+
+        .radio-option input[type="radio"]:checked + .radio-label {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .result-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+
+        .result-title {
+            color: var(--primary);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+            margin-top: 0;
+            text-align: center;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #F3F4F6;
+        }
+
+        .result-row:last-child { border-bottom: none; }
+        .result-value { font-weight: bold; }
+        .highlight { color: var(--primary); font-size: 1.1rem; }
+
+        /* Estilos para o Treino */
+        .treino-semana {
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: #F8FAFC;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+        }
+        .treino-title {
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 8px;
+            margin-top: 0;
+        }
+        .treino-item {
+            margin-bottom: 5px;
+            font-size: 0.95rem;
+            color: #333;
+        }
+        .treino-cardio {
+            margin-top: 10px;
+            font-weight: 600;
+            color: #047857;
+            font-size: 0.95rem;
+        }
+
+        #bf-container { display: none; }
+    </style>
+</head>
+<body>
+
+    <!-- TELA 1: HOME -->
+    <div id="screen-home" class="screen active">
+        <h1 class="hero-title">NutriTreino Pro</h1>
+        <p class="hero-subtitle">Calculadora Nutricional & Prescrição</p>
+        <button class="btn-primary" onclick="showScreen('screen-warning')">INICIAR AGORA</button>
+    </div>
+
+    <!-- TELA 2: AVISO -->
+    <div id="screen-warning" class="screen">
+        <h1 class="warning-title">A V I S O</h1>
+        <div class="warning-box">
+            <p>Este aplicativo possui caráter exclusivamente informativo e recreativo. As informações apresentadas não substituem orientação médica, nutricional ou profissional.</p>
+            <p>Consulte um profissional de saúde antes de iniciar o uso de qualquer suplemento, dieta ou protocolo alimentar.</p>
+        </div>
+        <button class="btn-primary" onclick="showScreen('screen-calculator')">ACEITAR E CONTINUAR</button>
+    </div>
+
+    <!-- TELA 3: CALCULADORA -->
+    <div id="screen-calculator" class="screen">
+        <div class="container">
+            <div class="header">
+                <h1>Dados do Usuário</h1>
+                <p>Preencha todos os campos obrigatórios</p>
+            </div>
+
+            <form id="calcForm">
+                <div class="form-group">
+                    <label>Nome:</label>
+                    <input type="text" id="nome" required placeholder="Digite seu nome">
+                </div>
+
+                <div class="form-group">
+                    <label>Peso (kg):</label>
+                    <input type="number" id="peso" step="0.1" required placeholder="Ex: 82.5">
+                </div>
+
+                <div class="form-group">
+                    <label>Idade:</label>
+                    <input type="number" id="idade" required placeholder="Sua idade">
+                </div>
+
+                <div class="form-group">
+                    <label>Altura (cm):</label>
+                    <input type="number" id="altura" required placeholder="Ex: 175">
+                </div>
+
+                <div class="form-group">
+                    <label>Sexo:</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" name="sexo" id="sexoM" value="M" checked>
+                            <label class="radio-label" for="sexoM">Masculino</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="sexo" id="sexoF" value="F">
+                            <label class="radio-label" for="sexoF">Feminino</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Possui exame de Bioimpedância?</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" name="bio" id="bioS" value="S" onchange="toggleBf()">
+                            <label class="radio-label" for="bioS">Sim</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="bio" id="bioN" value="N" checked onchange="toggleBf()">
+                            <label class="radio-label" for="bioN">Não</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group" id="bf-container">
+                    <label>% de Gordura (BF):</label>
+                    <input type="number" id="bf" step="0.1" placeholder="Ex: 14.5">
+                </div>
+
+                <div class="form-group">
+                    <label>Objetivo:</label>
+                    <div class="radio-group radio-vertical">
+                        <div class="radio-option"><input type="radio" name="obj" id="obj1" value="1" checked><label class="radio-label" for="obj1">1. Redução (Cutting)</label></div>
+                        <div class="radio-option"><input type="radio" name="obj" id="obj2" value="2"><label class="radio-label" for="obj2">2. Ganho (Bulking)</label></div>
+                        <div class="radio-option"><input type="radio" name="obj" id="obj3" value="3"><label class="radio-label" for="obj3">3. Recomposição</label></div>
+                        <div class="radio-option"><input type="radio" name="obj" id="obj4" value="4"><label class="radio-label" for="obj4">4. Força (Performance)</label></div>
+                        <div class="radio-option"><input type="radio" name="obj" id="obj5" value="5"><label class="radio-label" for="obj5">5. Resistência (Endurance)</label></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Nível de Treino:</label>
+                    <div class="radio-group radio-vertical">
+                        <div class="radio-option"><input type="radio" name="nivel" id="niv1" value="1" checked><label class="radio-label" for="niv1">Iniciante (< 1 ano)</label></div>
+                        <div class="radio-option"><input type="radio" name="nivel" id="niv2" value="2"><label class="radio-label" for="niv2">Intermediário (1-3 anos)</label></div>
+                        <div class="radio-option"><input type="radio" name="nivel" id="niv3" value="3"><label class="radio-label" for="niv3">Avançado (> 3 anos)</label></div>
+                    </div>
+                </div>
+
+                <div style="padding-bottom: 20px;">
+                    <button type="button" class="btn-primary" onclick="calcular()">CALCULAR RESULTADOS</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- TELA 4: RESULTADOS -->
+    <div id="screen-results" class="screen">
+        <div class="container">
+            <div class="header">
+                <h1>Resultados & Prescrição</h1>
+                <p id="res-nome-header" style="font-weight: bold; font-size: 1.2rem;">Para: </p>
+            </div>
+
+            <div class="result-card">
+                <h3 class="result-title">Resumo Físico</h3>
+                <div class="result-row"><span>Objetivo:</span> <span class="result-value" id="res-obj"></span></div>
+                <div class="result-row"><span>Nível:</span> <span class="result-value" id="res-nivel"></span></div>
+                <div class="result-row"><span>IMC:</span> <span class="result-value" id="res-imc"></span></div>
+            </div>
+
+            <div class="result-card">
+                <h3 class="result-title">Gasto Energético & Dieta</h3>
+                <div class="result-row"><span>Taxa Basal (BMR):</span> <span class="result-value" id="res-bmr"></span></div>
+                <div class="result-row"><span>Gasto Total (TDEE):</span> <span class="result-value" id="res-tdee"></span></div>
+                <div class="result-row"><span class="highlight">Meta Consumo:</span> <span class="result-value highlight" id="res-cal"></span></div>
+            </div>
+
+            <div class="result-card">
+                <h3 class="result-title">Macronutrientes Diários</h3>
+                <div class="result-row"><span>Proteínas:</span> <span class="result-value" id="res-prot"></span></div>
+                <div class="result-row"><span>Carboidratos:</span> <span class="result-value" id="res-carb"></span></div>
+                <div class="result-row"><span>Gorduras:</span> <span class="result-value" id="res-gord"></span></div>
+                <div class="result-row"><span class="highlight">Água Recomendada:</span> <span class="result-value highlight" id="res-agua"></span></div>
+            </div>
+
+            <div class="result-card" id="box-suplementacao">
+                <h3 class="result-title">Suplementação Recomendada</h3>
+                <div id="res-suplementos" style="font-size: 0.95rem; line-height: 1.6; padding-top: 10px;">
+                    <!-- Preenchido via JS -->
+                </div>
+            </div>
+
+            <div class="result-card" id="box-treino">
+                <h3 class="result-title">Planejamento - 4 Semanas</h3>
+                <p style="text-align: center; font-size: 0.85rem; color: #666; margin-top: -5px; margin-bottom: 15px;">Diretrizes de Periodização: Schoenfeld, Israetel & Helms</p>
+
+                <div id="res-treino-s1" class="treino-semana"></div>
+                <div id="res-treino-s2" class="treino-semana"></div>
+                <div id="res-treino-s3" class="treino-semana"></div>
+                <div id="res-treino-s4" class="treino-semana"></div>
+            </div>
+
+            <button class="btn-primary" style="background-color: #6B7280; margin-bottom: 40px;" onclick="showScreen('screen-calculator')">NOVO CÁLCULO</button>
+        </div>
+    </div>
+
+    <script>
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        function toggleBf() {
+            const isSim = document.getElementById('bioS').checked;
+            document.getElementById('bf-container').style.display = isSim ? 'block' : 'none';
+        }
+
+        function calcular() {
+            const nome = document.getElementById('nome').value;
+            const peso = parseFloat(document.getElementById('peso').value);
+            const idade = parseInt(document.getElementById('idade').value);
+            const altura = parseFloat(document.getElementById('altura').value);
+            const sexo = document.querySelector('input[name="sexo"]:checked').value;
+            const bio = document.querySelector('input[name="bio"]:checked').value;
+            const objetivo = document.querySelector('input[name="obj"]:checked').value;
+            const nivel = document.querySelector('input[name="nivel"]:checked').value;
+
+            if(!nome || isNaN(peso) || isNaN(idade) || isNaN(altura)) {
+                alert("Preencha todos os campos corretamente.");
+                return;
+            }
+
+            if (idade < 18) {
+                alert("BLOQUEIO: Este aplicativo NÃO realiza cálculos para menores de 18 anos.");
+                return;
+            }
+
+            if (bio === 'S') {
+                const bf = parseFloat(document.getElementById('bf').value);
+                if (isNaN(bf) || bf < 0 || bf > 100) {
+                    alert("O % de Gordura deve estar entre 0 e 100.");
+                    return;
+                }
+            }
+
+            // Lógica Baseada no Python
+            const min_cal = sexo === "M" ? 1500 : 1200;
+            const bmr = (10 * peso) + (6.25 * altura) - (5 * idade) + (sexo === "M" ? 5 : -161);
+
+            let f_tdee, n_txt, f_prot;
+            if (nivel === "1") { f_tdee = 1.20; n_txt = "Iniciante"; f_prot = 0.85; }
+            else if (nivel === "2") { f_tdee = 1.35; n_txt = "Intermediário"; f_prot = 1.00; }
+            else { f_tdee = 1.45; n_txt = "Avançado"; f_prot = 1.15; }
+
+            const tdee = bmr * f_tdee;
+            let calorias, prot, gord, obj_txt;
+
+            if (objetivo === "1") {
+                calorias = Math.max(tdee - 500, min_cal);
+                prot = peso * 1.8 * f_prot;
+                gord = peso * 0.7;
+                obj_txt = "Redução de Peso (Definição)";
+            } else if (objetivo === "2") {
+                calorias = tdee + (nivel === "1" ? 300 : 450);
+                prot = peso * 1.6 * f_prot;
+                gord = peso * 0.8;
+                obj_txt = "Ganho de Massa (Hipertrofia)";
+            } else if (objetivo === "3") {
+                calorias = Math.max(tdee - 200, min_cal);
+                prot = peso * 2.0 * f_prot;
+                gord = peso * 0.75;
+                obj_txt = "Redução de Peso + Ganho de Massa (Recomposição)";
+            } else if (objetivo === "4") {
+                calorias = tdee + 200;
+                prot = peso * 1.8 * f_prot;
+                gord = peso * 0.9;
+                obj_txt = "Ganho de Força e Explosão";
+            } else {
+                calorias = tdee + 350;
+                prot = peso * 1.4 * f_prot;
+                gord = peso * 0.75;
+                obj_txt = "Aumento de Resistência (Endurance)";
+            }
+
+            const carbo = Math.max((calorias - (prot * 4) - (gord * 9)) / 4, 0);
+            const agua = (nivel !== "3") ? peso * 38 : peso * 48;
+            const imc = peso / Math.pow((altura / 100), 2);
+
+            // Popula os dados de dieta na tela
+            document.getElementById('res-nome-header').textContent = "Para: " + nome;
+            document.getElementById('res-obj').textContent = obj_txt;
+            document.getElementById('res-nivel').textContent = n_txt;
+            document.getElementById('res-imc').textContent = imc.toFixed(1);
+
+            document.getElementById('res-bmr').textContent = Math.round(bmr) + " kcal";
+            document.getElementById('res-tdee').textContent = Math.round(tdee) + " kcal";
+            document.getElementById('res-cal').textContent = Math.round(calorias) + " kcal/dia";
+
+            document.getElementById('res-prot').textContent = Math.round(prot) + "g";
+            document.getElementById('res-carb').textContent = Math.round(carbo) + "g";
+            document.getElementById('res-gord').textContent = Math.round(gord) + "g";
+            document.getElementById('res-agua').textContent = (agua/1000).toFixed(1) + " L";
+
+            // GERAR SUPLEMENTAÇÃO
+            let sups = [];
+            if (objetivo === "1") {
+                sups.push(`• <b>Whey Protein:</b> ${(peso*0.4*f_prot).toFixed(1)}g. Saciedade e preservação muscular.`);
+                sups.push(`• <b>Psyllium:</b> 5g a 10g antes das refeições. Retarda a fome.`);
+                if (nivel === "2" || nivel === "3") sups.push(`• <b>Cafeína pura:</b> ${(peso*4).toFixed(0)}mg pré-treino. Oxidação de gordura.`);
+                if (nivel === "3") sups.push(`• <b>Carnitina:</b> 2g fixo ao dia. Otimização mitocondrial.`);
+            } else if (objetivo === "2") {
+                sups.push(`• <b>Creatina:</b> ${(peso*0.07).toFixed(1)}g/dia. Hidratação celular e ressíntese de ATP.`);
+                sups.push(`• <b>Whey + Malto:</b> ${(peso*0.4).toFixed(1)}g + ${(peso*0.6).toFixed(1)}g pós-treino. Balanço anabólico.`);
+                if (nivel === "1") sups.push(`• <b>Hipercalórico:</b> Uso estratégico para bater superávit.`);
+                if (nivel === "2" || nivel === "3") sups.push(`• <b>Beta-Alanina:</b> ${(peso*0.05).toFixed(1)}g/dia. Tamponamento intra-treino.`);
+            } else if (objetivo === "3") {
+                sups.push(`• <b>Whey Protein:</b> ${(peso*0.4*f_prot).toFixed(1)}g. Retenção de nitrogênio ativo.`);
+                sups.push(`• <b>Creatina:</b> ${(peso*0.06).toFixed(1)}g/dia. Sinalização hipertrófica sob déficit.`);
+                if (nivel === "3") {
+                    sups.push(`• <b>HMB:</b> 3g fixo ao dia. Atenuação do catabolismo.`);
+                    sups.push(`• <b>Ômega 3:</b> 3g ao dia. Otimização celular.`);
+                }
+            } else if (objetivo === "4") {
+                sups.push(`• <b>Creatina:</b> ${(peso*0.08).toFixed(1)}g/dia. Saturação celular para esforço máximo.`);
+                sups.push(`• <b>Cafeína:</b> ${(peso*5).toFixed(0)}mg pré-treino. Estímulo SNC.`);
+                if (nivel === "2" || nivel === "3") sups.push(`• <b>Betaína:</b> 2.5g/dia. Potência muscular.`);
+                if (nivel === "3") sups.push(`• <b>Citrulina Malato:</b> ${(peso*0.1).toFixed(1)}g pré-treino.`);
+            } else {
+                sups.push(`• <b>Carbo/Palatinose:</b> ${(peso*0.6).toFixed(1)}g. Oxidação constante.`);
+                sups.push(`• <b>Eletrólitos:</b> 500mL a 1L intra-treino.`);
+                if (nivel === "2" || nivel === "3") sups.push(`• <b>Beta-Alanina:</b> ${(peso*0.06).toFixed(1)}g/dia.`);
+                if (nivel === "3") sups.push(`• <b>Suco de Beterraba:</b> 500mL 2h antes. Redução do custo de O2.`);
+            }
+
+            sups.push(`<br><i>Saúde Básica:</i> Vitamina D e C, Magnésio (350mg à noite), Zinco (10mg) e Ômega 3.`);
+
+            document.getElementById('res-suplementos').innerHTML = sups.join('<br><br>');
+
+            // GERAR TREINO
+            let pS1 = [], pS2 = [], pS3 = [], pS4 = [], cS1 = "", cS2 = "", cS3 = "", cS4 = "";
+
+            if (objetivo === "1") { // Cutting
+                if (nivel === "1") {
+                    pS1 = ["Leg Press 45º - 3x12", "Supino Sentado Máquina - 3x12", "Puxada Alta Aberta - 3x12", "Desenvolvimento Máquina - 3x12", "Cadeira Flexora - 3x12", "Prancha Abdominal - 3x30s"];
+                    pS2 = ["Leg Press 45º - 4x12", "Supino Sentado Máquina - 4x12", "Puxada Alta Aberta - 4x12", "Desenvolvimento Máquina - 3x12", "Cadeira Flexora - 4x12", "Prancha Abdominal - 3x40s"];
+                    pS3 = ["Leg Press 45º - 4x10 (Aumento de carga)", "Supino Sentado Máquina - 4x10", "Puxada Alta Aberta - 4x10", "Desenvolvimento Máquina - 4x10", "Cadeira Flexora - 4x10", "Abdominal Crunch Solo - 3x15"];
+                    pS4 = ["Leg Press 45º - 3x12 (Estabilização)", "Supino Sentado - 3x12", "Puxada Alta - 3x12", "Desenvolvimento - 3x12", "Flexora - 3x12", "Prancha - 3x30s"];
+                    cS1 = "Cardio: 3x na semana - 20 min Caminhada"; cS2 = "Cardio: 3x na semana - 30 min Caminhada"; cS3 = "Cardio: 4x na semana - 30 min Caminhada"; cS4 = "Cardio: 3x na semana - 20 min Leve";
+                } else {
+                    pS1 = ["Agachamento Livre - 3x12", "Supino Reto Halteres - 3x10", "Remada Curvada - 3x12", "Desenvolvimento Halteres - 3x12", "Stiff - 3x12", "Prancha - 3x45s"];
+                    pS2 = ["Agachamento Livre - 4x12", "Supino Reto Halteres - 4x10", "Remada Curvada - 4x12", "Desenvolvimento Halteres - 3x12", "Stiff - 4x12", "Prancha - 3x60s"];
+                    pS3 = ["Agachamento Livre - 4x8 (Carga Alta)", "Supino Reto Halteres - 4x8", "Remada Curvada - 4x8", "Desenvolvimento Halteres - 4x10", "Stiff - 4x8", "Elevação Pernas - 3xMáx"];
+                    pS4 = ["Agachamento Livre - 4x10 (Falha)", "Supino Halteres - 4x10 (Drop-Set)", "Remada Curvada - 4x10 (Drop-Set)", "Desenvolvimento Halteres - 3x10", "Stiff - 3x10", "Prancha - 3x Exaustão"];
+                    cS1 = "Cardio: 3x na semana - 30 min Zona 2"; cS2 = "Cardio: 4x na semana - 35 min Zona 2"; cS3 = "Cardio: 4x na semana - 40 min Zona 2"; cS4 = "Cardio: 5x na semana - 25 min Moderado";
+                }
+            } else if (objetivo === "2") { // Bulking
+                if (nivel === "1") {
+                    pS1 = ["Agachamento Hack/Goblet - 3x10", "Puxada Alta Polia - 3x10", "Supino Inclinado - 3x10", "Extensora - 3x12", "Elevação Lateral - 3x12", "Rosca Direta - 3x10"];
+                    pS2 = ["Agachamento Hack/Goblet - 4x10", "Puxada Alta Polia - 4x10", "Supino Inclinado - 4x10", "Extensora - 4x12", "Elevação Lateral - 4x12", "Rosca Direta - 3x12"];
+                    pS3 = ["Agachamento Hack - 4x8 (Pesado)", "Puxada Alta - 4x8", "Supino Inclinado - 4x8", "Extensora - 3x10", "Elevação Lateral - 4x10", "Rosca Direta - 4x8"];
+                    pS4 = ["Agachamento Hack - 3x10", "Puxada Alta - 3x10", "Supino Inclinado - 3x10", "Extensora - 3x10", "Elevação Lateral - 3x10", "Rosca Direta - 3x10"];
+                    cS1 = "Cardio: 2x na semana - 15 min Leve"; cS2 = "Cardio: 2x na semana - 20 min Leve"; cS3 = "Cardio: 2x na semana - 20 min Leve"; cS4 = "Cardio: 1x na semana - 15 min Leve";
+                } else {
+                    pS1 = ["Agachamento Livre - 3x8", "Barra Fixa/Pulldown - 3x8", "Supino Reto Barra - 3x8", "Leg Press 45º - 3x10", "Elevação Lateral - 3x12", "Rosca Direta W - 3x10"];
+                    pS2 = ["Agachamento Livre - 4x8", "Barra Fixa - 4x8", "Supino Reto Barra - 4x8", "Leg Press 45º - 4x10", "Elevação Lateral - 4x12", "Rosca Direta W - 3x12"];
+                    pS3 = ["Agachamento Livre - 4x6", "Barra Fixa - 4x6", "Supino Reto Barra - 4x6", "Leg Press 45º - 3x8", "Elevação Lateral - 4x10", "Rosca Direta W - 4x8"];
+                    pS4 = ["Agachamento Livre - 4x8", "Pulldown Alto - 4x8 (Rest-Pause)", "Supino Reto - 4x8 (Rest-Pause)", "Leg Press - 3x12 (Pump)", "Elevação Lateral - 4x15", "Rosca W - 3x10"];
+                    cS1 = "Cardio: 2x na semana - 20 min LISS"; cS2 = "Cardio: 2x na semana - 25 min LISS"; cS3 = "Cardio: 3x na semana - 20 min LISS"; cS4 = "Cardio: 2x na semana - 20 min Muito Leve";
+                }
+            } else if (objetivo === "3") { // Recomposição
+                if (nivel === "1") {
+                    pS1 = ["Leg Press 45º - 3x10", "Remada Baixa - 3x10", "Supino Reto Halteres - 3x10", "Mesa Flexora - 3x12", "Tríceps Corda - 3x10", "Abdominal Infra - 3x12"];
+                    pS2 = ["Leg Press 45º - 4x10", "Remada Baixa - 4x10", "Supino Reto Halteres - 4x10", "Mesa Flexora - 4x12", "Tríceps Corda - 4x10", "Abdominal Infra - 3x15"];
+                    pS3 = ["Leg Press 45º - 4x8", "Remada Baixa - 4x8", "Supino Halteres - 4x8", "Mesa Flexora - 4x10", "Tríceps Corda - 4x8", "Abdominal Infra - 4x12"];
+                    pS4 = ["Leg Press 45º - 3x10", "Remada Baixa - 3x10", "Supino Halteres - 3x10", "Mesa Flexora - 3x10", "Tríceps Corda - 3x10", "Abdominal Infra - 3x12"];
+                    cS1 = "Cardio: 3x na semana - 20 min Moderado"; cS2 = "Cardio: 3x na semana - 25 min Moderado"; cS3 = "Cardio: 3x na semana - 30 min Moderado"; cS4 = "Cardio: 2x na semana - 20 min Leve";
+                } else {
+                    pS1 = ["Terra (Deadlift) - 3x6", "Afundo Halteres - 3x10/perna", "Supino Inclinado - 3x10", "Remada Sentado - 3x10", "Paralelas/Supino Fechado - 3x10", "Abdominal Infra - 3x12"];
+                    pS2 = ["Terra - 4x6", "Afundo Halteres - 3x12/perna", "Supino Inclinado - 4x10", "Remada Sentado - 4x10", "Paralelas - 4x10", "Abdominal Infra - 3x15"];
+                    pS3 = ["Terra - 4x4 (Pesado)", "Afundo Halteres - 4x8/perna", "Supino Inclinado - 4x8", "Remada Sentado - 4x8", "Paralelas - 4x8", "Abdominal Infra - 4x12"];
+                    pS4 = ["Terra - 3x5", "Afundo Halteres - 3x10", "Supino Inclinado - 4x10", "Remada Sentado - 4x10", "Paralelas - 3x12", "Abdominal Infra - 3xMáx"];
+                    cS1 = "Cardio: 3x na semana - 25 min Zona 2"; cS2 = "Cardio: 3x na semana - 30 min Zona 2"; cS3 = "Cardio: 3x na semana - 35 min Zona 2"; cS4 = "Cardio: 4x na semana - 30 min Zona 2";
+                }
+            } else if (objetivo === "4") { // Força
+                pS1 = ["Agachamento - 3x5", "Supino Reto - 3x5", "Levantamento Terra - 3x5", "Desenvolvimento - 3x5", "Remada Curvada - 3x5", "Exercício Core - 3x10"];
+                pS2 = ["Agachamento - 4x5", "Supino Reto - 4x5", "Levantamento Terra - 4x5", "Desenvolvimento - 4x5", "Remada Curvada - 4x5", "Exercício Core - 3x12"];
+                pS3 = ["Agachamento - 5x3", "Supino Reto - 5x3", "Levantamento Terra - 5x3", "Desenvolvimento - 5x3", "Remada Curvada - 5x3", "Exercício Core - 4x8"];
+                pS4 = ["Agachamento - 3x3", "Supino Reto - 3x3", "Levantamento Terra - 3x3", "Desenvolvimento - 3x3", "Remada Curvada - 3x3", "Exercício Core - 3x10"];
+                cS1 = "Cardio: 2x na semana - 20 min LISS"; cS2 = "Cardio: 2x na semana - 20 min LISS"; cS3 = "Cardio: 1x na semana - 20 min LISS"; cS4 = "Cardio: Nenhum ou 15 min leve";
+            } else { // Endurance
+                pS1 = ["Agachamento Taça - 3x15", "Flexão de Braços - 3x15", "Remada Invertida - 3x15", "Swing Kettlebell - 3x20", "Thrusters Halteres - 3x15", "Burpees - 3x45s"];
+                pS2 = ["Agachamento Taça - 4x15", "Flexão de Braços - 4x15", "Remada Invertida - 4x15", "Swing Kettlebell - 4x20", "Thrusters Halteres - 4x15", "Burpees - 4x45s"];
+                pS3 = ["Agachamento Taça - 3x20", "Flexão de Braços - 3x20", "Remada Invertida - 3x18", "Swing Kettlebell - 4x25", "Thrusters Halteres - 3x20", "Burpees - 3x60s"];
+                pS4 = ["CIRCUITO COMPACTO: Realizar de 1 a 5 sem descanso.", "Repetir 3 ciclos.", "Agachamento Taça x15", "Flexão de Braço x15", "Remada Invertida x15", "Swing Kettlebell x20", "Thrusters x15", "Burpees x60s"];
+                cS1 = "Cardio: 3x na semana - 40 min Corrida/Bike"; cS2 = "Cardio: 3x na semana - 50 min Corrida/Bike"; cS3 = "Cardio: 4x na semana - 45 min misto (1 HIIT)"; cS4 = "Cardio: 4x na semana - 30 min (2 HIITs)";
+            }
+
+            function renderSemana(id, title, treinos, cardio) {
+                let html = `<h4 class="treino-title">${title}</h4>`;
+                treinos.forEach(t => html += `<div class="treino-item">• ${t}</div>`);
+                html += `<div class="treino-cardio">${cardio}</div>`;
+                document.getElementById(id).innerHTML = html;
+            }
+
+            renderSemana('res-treino-s1', 'Semana 1: Adaptação Base', pS1, cS1);
+            renderSemana('res-treino-s2', 'Semana 2: Sobrecarga em Volume', pS2, cS2);
+            renderSemana('res-treino-s3', 'Semana 3: Intensidade e Ajuste', pS3, cS3);
+            renderSemana('res-treino-s4', 'Semana 4: Choque / Deload', pS4, cS4);
+
+            showScreen('screen-results');
+        }
+    </script>
+</body>
+</html>
